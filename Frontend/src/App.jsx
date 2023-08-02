@@ -1,35 +1,53 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import React, { useEffect } from "react";
+import "./App.css";
+import Header from "./Header/Header";
+import Sidebar from "./Sidebar/Sidebar";
+import Feed from "./Feed/Feed";
+import { useDispatch, useSelector } from "react-redux";
+import { login, logout, selectUser } from "./Feacture/userSlice";
+import Login from "./Login/Login";
+import { auth } from "./firebase";
+import Widgets from "./Widgets/Widgets";
 
 function App() {
-  const [count, setCount] = useState(0)
+  const user = useSelector(selectUser);
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    auth.onAuthStateChanged((userAuth) => {
+      if (userAuth) {
+        //user is logged in
+        dispatch(
+          login({
+            email: userAuth.email,
+            uid: userAuth.uid,
+            displayName: userAuth.displayName,
+            photoUrl: userAuth.photoURL,
+          })
+        );
+      } else {
+        //user is logged out
+        dispatch(logout());
+      }
+    });
+  }, []);
 
   return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    <div className="app">
+      <Header />
+      {!user ? (
+        <Login />
+      ) : (
+        <div className="app_body">
+          <Sidebar />
+          <Feed />
+          <Widgets />
+        </div>
+      )}
+    </div>
+  );
 }
 
-export default App
+export default App;
+
+//2.50.33
