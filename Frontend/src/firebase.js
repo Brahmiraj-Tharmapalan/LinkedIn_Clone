@@ -1,9 +1,12 @@
-import firebase from 'firebase/compat/app';
-import 'firebase/compat/firestore';
-import 'firebase/compat/auth';
+import dotenv from "dotenv";
+import firebase from "firebase/compat/app";
+import "firebase/compat/firestore";
+import "firebase/compat/auth";
+
+dotenv.config(); // Load environment variables from .env file
 
 const firebaseConfig = {
-  apiKey: "AIzaSyAUk65t_4bEGIlkTol3CwjyQAQl7bGDLrU",
+  apiKey: process.env.FIREBASE_API_KEY,
   authDomain: "linkedin-clone-67adf.firebaseapp.com",
   projectId: "linkedin-clone-67adf",
   storageBucket: "linkedin-clone-67adf.appspot.com",
@@ -13,7 +16,7 @@ const firebaseConfig = {
 
 const firebaseApp = firebase.initializeApp(firebaseConfig);
 const db = firebaseApp.firestore();
-const auth =firebase.auth();
+const auth = firebase.auth();
 
-export {db, auth};
+export { db, auth };
 export default firebase;
